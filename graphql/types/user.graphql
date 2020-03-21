@@ -1,0 +1,17 @@
+type User {
+    id: ID!
+    first_name: String!
+    middle_name: String
+    last_name: String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+    prizebonds: [UserPrizeBond!] @hasMany
+}
+
+input CreateUserInput {
+    first_name: String!
+    middle_name: String
+    last_name: String!
+    email: String!
+}

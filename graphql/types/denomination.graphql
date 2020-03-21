@@ -1,0 +1,7 @@
+type Denomination {
+    id: ID!
+    label: String!
+    denomination: String!
+    prizebond_draws: [PrizeBondDraw!]! @hasMany
+    prizebond_users: [UserPrizeBond!]! @hasMany
+}

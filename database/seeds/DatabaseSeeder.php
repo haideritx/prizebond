@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UsersTableSeeder::class);
+        $this->call(DenominationsTableSeeder::class); //PrizeBond Denominations
+        $this->call(RolesAndPermissionsSeeder::class); //PrizeBond Denominations
     }
 }

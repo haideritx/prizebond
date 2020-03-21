@@ -1,0 +1,26 @@
+enum position {
+    FIRST @enum(value:1)
+    SECOND @enum(value:2)
+    THIRD @enum(value:3)
+}
+
+type PrizeBondDraw {
+    id: ID!
+    denomination: Denomination! @belongsTo
+    bond: Int!
+    position: position!
+    draw_date: Date!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type UserPrizeBond {
+    id: ID!
+    denomination: Denomination! @belongsTo
+    bond: Int!
+    user: User! @belongsTo
+    purchased_at:Date
+    purchase_location:String
+    created_at: DateTime!
+    updated_at: DateTime!
+}

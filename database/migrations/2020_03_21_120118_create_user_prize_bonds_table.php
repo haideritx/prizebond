@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateUserPrizeBondsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('user_prize_bonds', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('denomination_id');
+            $table->unsignedInteger('user_id');
+            $table->decimal('bond',6,0); //Bond Number
+            $table->date('purchased_at')->nullable();
+            $table->string('purchase_location')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('user_prize_bonds');
+    }
+}
