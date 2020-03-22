@@ -1,0 +1,59 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-01-01 13:00:00`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+
+#import types/user.graphql
+#import types/denomination.graphql
+#import types/prizebond.graphql
+
+type Login {
+    access_token: String
+    expires_at: String
+}
+
+type Query {
+    user(id: ID! @eq): User @find
+    allDraws: [PrizeBondDraw!]! @paginate(defaultCount: 10, maxCount:100, model: "App\\Models\\PrizeBond")
+    winnerbond(
+        """
+        @rules used for the Validation
+        """
+        bond: Int! @rules(apply: ["size:6"]) @eq
+    ): PrizeBondDraw @find(model: "App\\Models\\PrizeBond")
+    login(email: String!, password: String!, remember_me : Boolean): Login
+}
+
+extend type Query @middleware(checks: ["auth:api"]) {
+    users: [User!]! @paginate(defaultCount: 10, , maxCount:100)
+    me : User
+}
+
+#type Mutation {
+#    signup(
+#        email: String! @rules(apply:["email","unique:users"]),
+#        password:String! @rules(apply:["min:6"]),
+#        first_name: String, middle_name: String,
+#        last_name: String ) : User
+#}
+
+
+
+#type Mutation {
+#    createUser(input: CreateUserInput @spread):User
+#}
+
+type Mutation {
+    createUser(input: CreateUserInput! @spread): User @create
+
+#    register(input: RegisterInput!): User
+    register(
+        email: String! @rules(apply: ["email","unique:users"]),
+        password: String! @rules(apply: ["min:6"]),
+        first_name: String!
+        middle_name: String
+        last_name: String!
+    ): User
+}

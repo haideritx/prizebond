@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\GraphQL\Queries;
+namespace App\Http\GraphQL\Mutations;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use App\Models\User;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 //use Newsletter;
 
-class Signup
+class Register
 {
     /**
      * Return a value for the field.
@@ -22,18 +22,18 @@ class Signup
     public function resolve($rootValue, array $args, GraphQLContext $context = null, ResolveInfo $resolveInfo)
     {
         $user = new User([
-            'name' => $args['name'],
+            'first_name' => $args['first_name'],
+            'middle_name' => $args['middle_name'],
+            'last_name' => $args['last_name'],
             'email' => $args['email'],
             'password' => bcrypt($args['password']),
         ]);
 
         $user->save();
 
-
-        if (!Newsletter::isSubscribed($args['email'])) {
-            Newsletter::subscribePending($args['email'], ['firstName' => $args['name'] ?? '']);
-        }
-
+//        if (!Newsletter::isSubscribed($args['email'])) {
+//            Newsletter::subscribePending($args['email'], ['firstName' => $args['name'] ?? '']);
+//        }
 
         return $user;
     }
