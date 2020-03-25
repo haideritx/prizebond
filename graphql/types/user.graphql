@@ -4,9 +4,9 @@ type User {
     middle_name: String
     last_name: String!
     email: String!
+    prizebonds: [UserPrizeBond!] @hasMany
     created_at: DateTime!
     updated_at: DateTime!
-    prizebonds: [UserPrizeBond!] @hasMany
 }
 
 input CreateUserInput {

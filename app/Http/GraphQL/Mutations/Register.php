@@ -23,7 +23,7 @@ class Register
     {
         $user = new User([
             'first_name' => $args['first_name'],
-            'middle_name' => $args['middle_name'],
+            'middle_name' => (isset($args['middle_name'])?$args['middle_name']:null),
             'last_name' => $args['last_name'],
             'email' => $args['email'],
             'password' => bcrypt($args['password']),

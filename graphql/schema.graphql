@@ -24,6 +24,8 @@ type Query {
         bond: Int! @rules(apply: ["size:6"]) @eq
     ): PrizeBondDraw @find(model: "App\\Models\\PrizeBond")
     login(email: String!, password: String!, remember_me : Boolean): Login
+
+    denominations: [Denomination] @all
 }
 
 extend type Query @middleware(checks: ["auth:api"]) {
@@ -46,14 +48,33 @@ extend type Query @middleware(checks: ["auth:api"]) {
 #}
 
 type Mutation {
-    createUser(input: CreateUserInput! @spread): User @create
-
-#    register(input: RegisterInput!): User
     register(
-        email: String! @rules(apply: ["email","unique:users"]),
+        email: String! @rules(apply: ["required", "email", "unique:users, email"]),
         password: String! @rules(apply: ["min:6"]),
-        first_name: String!
+        first_name: String! @rules(apply: ["required"])
         middle_name: String
-        last_name: String!
+        last_name: String! @rules(apply: ["required"])
     ): User
+}
+
+extend type Mutation @middleware(checks: ["auth:api"]) {
+    # User Management
+    createUser(input: CreateUserInput! @spread): User @create
+    updateUser(
+        id: ID @rules(apply: ["required"])
+        first_name: String
+        middle_name: String
+        last_name: String
+        email: String @rules(apply: ["email"])
+    ): User @update(model: "App\\Models\\User")
+    deleteUser(id: ID @rules(apply: ["required"])): User @delete(model: "App\\Models\\User")
+
+    #TODO: Items as followoing
+    # Filter and List Users - Admin
+
+    # User Prizebond Management
+    # Add Prizebond - User/Admin
+    # Update Prizebond - User/Admin
+    # Delete/Trash Prizebond - User/Admin
+
 }
