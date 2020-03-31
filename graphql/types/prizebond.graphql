@@ -24,3 +24,8 @@ type UserPrizeBond {
     created_at: DateTime!
     updated_at: DateTime!
 }
+
+# Queries
+extend type Query {
+    denominations: [Denomination] @all
+}
