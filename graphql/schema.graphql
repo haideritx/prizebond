@@ -9,12 +9,35 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 #import types/denomination.graphql
 #import types/prizebond.graphql
 
+
+"Object of inputs with details for ordering columns"
+input OrderByClause {
+    "Name of field for sorting"
+    field: String!
+    "Sorting direction"
+    order: SortOrder!
+}
+
+"Array if order of sorting types"
+enum SortOrder {
+    ASC
+    DESC
+}
+
 type Login {
     access_token: String
     expires_at: String
 }
 
+"Details about current installation"
+type Stats {
+    users_count: Int!
+    groups_count: Int!
+    servers_count: Int!
+}
+
 type Query {
+    "Get single user by unique ID"
     user(id: ID! @eq): User @find
     allDraws: [PrizeBondDraw!]! @paginate(defaultCount: 10, maxCount:100, model: "App\\Models\\PrizeBond")
     winnerbond(
@@ -23,14 +46,19 @@ type Query {
         """
         bond: Int! @rules(apply: ["size:6"]) @eq
     ): PrizeBondDraw @find(model: "App\\Models\\PrizeBond")
-    login(email: String!, password: String!, remember_me : Boolean): Login
+#    login(email: String!, password: String!, remember_me : Boolean): Login
 
     denominations: [Denomination] @all
+
 }
 
 extend type Query @middleware(checks: ["auth:api"]) {
+    "Get list of all users with additinal filters"
     users: [User!]! @paginate(defaultCount: 10, , maxCount:100)
     me : User
+
+    "Get system status for dashboard"
+    stats: Stats!
 }
 
 #type Mutation {
@@ -48,17 +76,15 @@ extend type Query @middleware(checks: ["auth:api"]) {
 #}
 
 type Mutation {
-    register(
-        email: String! @rules(apply: ["required", "email", "unique:users, email"]),
-        password: String! @rules(apply: ["min:6"]),
-        first_name: String! @rules(apply: ["required"])
-        middle_name: String
-        last_name: String! @rules(apply: ["required"])
-    ): User
-}
-
-extend type Mutation @middleware(checks: ["auth:api"]) {
-    # User Management
+    # Auth
+#    forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ForgotPassword@resolve")
+#    register(
+#        email: String! @rules(apply: ["required", "email", "unique:users, email"]),
+#        password: String! @rules(apply: ["min:6"]),
+#        first_name: String! @rules(apply: ["required"])
+#        middle_name: String
+#        last_name: String! @rules(apply: ["required"])
+#    ): User
     createUser(input: CreateUserInput! @spread): User @create
     updateUser(
         id: ID @rules(apply: ["required"])
@@ -67,14 +93,29 @@ extend type Mutation @middleware(checks: ["auth:api"]) {
         last_name: String
         email: String @rules(apply: ["email"])
     ): User @update(model: "App\\Models\\User")
-    deleteUser(id: ID @rules(apply: ["required"])): User @delete(model: "App\\Models\\User")
-
-    #TODO: Items as followoing
-    # Filter and List Users - Admin
-
-    # User Prizebond Management
-    # Add Prizebond - User/Admin
-    # Update Prizebond - User/Admin
-    # Delete/Trash Prizebond - User/Admin
-
+    deleteUser(id: ID! @rules(apply: ["required"])): User @delete(model: "App\\Models\\User")
 }
+
+#extend type Mutation @middleware(checks: ["auth:api"]) {
+#    # User Management
+#    createUser(input: CreateUserInput! @spread): User @create
+#    updateUser(
+#        id: ID @rules(apply: ["required"])
+#        first_name: String
+#        middle_name: String
+#        last_name: String
+#        email: String @rules(apply: ["email"])
+#    ): User @update(model: "App\\Models\\User")
+#    deleteUser(id: ID! @rules(apply: ["required"])): User @delete(model: "App\\Models\\User")
+#
+#    #TODO: Items as followoing
+#    # Filter and List Users - Admin
+#    # List Groups - Admin - Low Priority
+#    # Manage Group Permissions - Admin  - Low Priority
+#
+#    # User Prizebond Management
+#    # Add Prizebond - User/Admin
+#    # Update Prizebond - User/Admin
+#    # Delete/Trash Prizebond - User/Admin
+#
+#}

@@ -32,6 +32,7 @@ return [
          */
         'middleware' => [
             \Nuwave\Lighthouse\Support\Http\Middleware\AcceptJson::class,
+            \Joselfonseca\LighthouseGraphQLPassport\Http\Middleware\AuthenticateWithApiGuard::class,
         ],
 
         /*

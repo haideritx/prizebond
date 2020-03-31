@@ -8,10 +8,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Joselfonseca\LighthouseGraphQLPassport\HasSocialLogin;
+use Joselfonseca\LighthouseGraphQLPassport\HasLoggedInTokens;
+use Joselfonseca\LighthouseGraphQLPassport\MustVerifyEmailGraphQL;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens,
+        Notifiable,
+//        HasSocialLogin,
+        MustVerifyEmailGraphQL,
+        HasLoggedInTokens;
 
     /**
      * The attributes that are mass assignable.
