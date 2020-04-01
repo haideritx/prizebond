@@ -25,7 +25,27 @@ type UserPrizeBond {
     updated_at: DateTime!
 }
 
+input AddPrizeBondInput {
+    user_id: Int # For Admin Users Only
+    denomination_id: Int! @rules(apply: ["required"])
+    bond:Int! @trim @rules(apply: ["required", "size:6"])
+    purchase_location: String
+    purchased_at: Date
+#    purchased
+}
+
+
+
+#TODO: Mutations
+## TODO: 1 - User can add Prizebond against any denomination
+## TODO: 2 - User can remove his/her added prizebond
+
 # Queries
 extend type Query {
     denominations: [Denomination] @all
+}
+
+# Mutations
+extend type Mutation {
+    addPrizeBond(input: AddPrizeBondInput @spread): UserPrizeBond @create
 }
